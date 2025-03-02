@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إذاعة القرآن الكريم</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="shortcut icon" href="./ض.jpeg" type="image/x-icon">
+</head>
+<body>
+    <div id="stars-container"></div> <!-- النجوم -->
+    <div id="moon-container"></div> <!-- الهلال -->
+    <header>
+        <h1>إذاعة القرآن الكريم</h1>
+        <p id="random-ayah"></p>
+    </header>
+    <main>
+        <div id="prayer-times">
+            <h2>مواعيد الأذان</h2>
+            <ul id="prayer-times-list"></ul>
+        </div>
+        <div id="sheikh-list"></div>
+        <div id="sheikh-details" style="display: none;">
+            <audio id="sheikh-audio" controls>
+                <source src="" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <img id="sheikh-image" src="" alt="صورة الشيخ">
+        </div>
+    </main>
+    <footer>
+        <p>إذاعة القرآن الكريم , جميع الحقوق محفوظة بهاء </p>
+    </footer>
+    <audio id="background-audio" loop autoplay>
+        <source src="background.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script src="./index.js"></script>
+</body>
+</html>
