@@ -9,6 +9,13 @@ body {
     padding: 0;
     overflow-y: scroll; /* إضافة Scroll للصفحة */
     position: relative;
+    animation: changeBackground 10s infinite;
+}
+
+@keyframes changeBackground {
+    0% { background-color: #004d40; }
+    50% { background-color: #2E8B57; }
+    100% { background-color: #004d40; }
 }
 
 header {
@@ -18,6 +25,11 @@ header {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 2;
+}
+
+header h1 {
+    color: #EAB15E;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 #prayer-times {
@@ -40,12 +52,22 @@ header {
 }
 
 #prayer-times-list li {
-    background: #FFD700; /* خلفية ذهبية */
+    background: #874100; /* خلفية ذهبية */
     padding: 10px;
     border-radius: 10px;
     margin: 10px 0;
-    color: #004d40; /* نص أخضر داكن */
+    color: #FFF0D9; /* نص أخضر داكن */
     font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#prayer-times-list li:hover {
+    background: #EAB15E; /* تغيير اللون عند التحويم */
+}
+
+#prayer-times-list li:first-child {
+    background: #ff5733; /* لون مميز للإمساك */
+    color: white;
 }
 
 #sheikh-list {
@@ -60,7 +82,7 @@ header {
 }
 
 .sheikh-item {
-    background: #90834e;
+    background: #874100;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
@@ -68,10 +90,11 @@ header {
     transition: transform 0.3s ease, background-color 0.3s ease;
     font-weight: bold;
     width: 200px; /* عرض ثابت لعناصر القائمة */
+    color: #FFF0D9;
 }
 
 .sheikh-item:hover {
-    background: #ffdd44;
+    background: #EAB15E;
     transform: scale(1.1);
 }
 
@@ -166,5 +189,13 @@ footer {
     #moon-container {
         width: 60px;
         height: 60px;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    #prayer-times {
+        padding: 10px;
     }
 }

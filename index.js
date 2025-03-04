@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const moonContainer = document.getElementById('moon-container');
     const prayerTimesList = document.getElementById('prayer-times-list');
 
-    // إنشاء النجوم
     function createStars() {
         const numStars = 100;
         for (let i = 0; i < numStars; i++) {
@@ -20,21 +19,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // إضافة الهلال
     function addMoon() {
         const moon = document.createElement('img');
-        moon.src = './pngtree-ramadan-lantern-cartoon-colored-clipart-colorful-cartoon-mubarak-vector-png-image_12912463-removebg-preview.png'; // تأكد من وجود صورة الهلال في مجلد المشروع
+        moon.src = './images-removebg-preview.png';
         moon.alt = 'هلال رمضان';
         moonContainer.appendChild(moon);
+    }
+
+    function showLoadingMessage() {
+        const loadingMessage = document.createElement('p');
+        loadingMessage.textContent = 'جاري التحميل...';
+        loadingMessage.style.color = '#FFF0D9';
+        sheikhList.appendChild(loadingMessage);
+    }
+
+    function hideLoadingMessage() {
+        const loadingMessage = sheikhList.querySelector('p');
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
     }
 
     createStars();
     addMoon();
 
-    // جلب بيانات الشيوخ من الـ API
     fetch('https://data-rosy.vercel.app/radio.json')
         .then(response => response.json())
         .then(data => {
+            hideLoadingMessage();
             if (data.radios && Array.isArray(data.radios)) {
                 data.radios.forEach(sheikh => {
                     const sheikhItem = document.createElement('div');
@@ -53,11 +65,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
+            hideLoadingMessage();
             console.error('Error fetching sheikhs:', error);
-            sheikhList.innerHTML = '<p>تعذر تحميل بيانات الشيوخ</p>';
+            sheikhList.innerHTML = '<p style="color: #FF0000;">تعذر تحميل بيانات الشيوخ</p>';
         });
 
-    // جلب آية قرآنية عشوائية
     fetch('https://api.alquran.cloud/v1/ayah/random/ar.asad')
         .then(response => response.json())
         .then(data => {
@@ -68,21 +80,45 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching random ayah:', error);
         });
 
-    // جلب مواعيد الأذان
-    fetch('https://api.aladhan.com/v1/timingsByCity/02-03-2025?city=cairo&country=egypt&method=8')
-        .then(response => response.json())
-        .then(data => {
-            const timings = data.data.timings;
-            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    function convertTo12HourFormat(time) {
+        const [hour, minute] = time.split(':');
+        let period = 'ص';
+        let formattedHour = parseInt(hour);
+        if (formattedHour >= 12) {
+            period = 'م';
+            if (formattedHour > 12) formattedHour -= 12;
+        }
+        return `${formattedHour}:${minute} ${period}`;
+    }
 
-            prayers.forEach(prayer => {
-                const li = document.createElement('li');
-                li.textContent = `${prayer}: ${timings[prayer]}`;
-                prayerTimesList.appendChild(li);
+    function fetchPrayerTimes() {
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+
+        const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=cairo&country=egypt&method=8`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const timings = data.data.timings;
+                const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+                
+                prayerTimesList.innerHTML = '';
+
+                prayers.forEach(prayer => {
+                    const li = document.createElement('li');
+                    li.textContent = `${prayer}: ${convertTo12HourFormat(timings[prayer])}`;
+                    prayerTimesList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching prayer times:', error);
+                prayerTimesList.innerHTML = '<p>تعذر تحميل مواعيد الأذان</p>';
             });
-        })
-        .catch(error => {
-            console.error('Error fetching prayer times:', error);
-            prayerTimesList.innerHTML = '<p>تعذر تحميل مواعيد الأذان</p>';
-        });
+    }
+
+    fetchPrayerTimes();
+    setInterval(fetchPrayerTimes, 86400000);
 });
