@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     sheikhItem.addEventListener('click', () => {
                         sheikhImage.src = sheikh.img;
                         sheikhAudio.src = sheikh.url;
+                        document.getElementById('sheikh-name').textContent = sheikh.name;
                         sheikhDetails.style.display = 'block';
                         sheikhAudio.play();
                     });
@@ -82,10 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function convertTo12HourFormat(time) {
         const [hour, minute] = time.split(':');
-        let period = 'ص';
+        let period = 'AM';
         let formattedHour = parseInt(hour);
         if (formattedHour >= 12) {
-            period = 'م';
+            period = 'PM';
             if (formattedHour > 12) formattedHour -= 12;
         }
         return `${formattedHour}:${minute} ${period}`;
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 const timings = data.data.timings;
-                const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+                const prayers = ['Fajr','Imsak', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
                 
                 prayerTimesList.innerHTML = '';
 

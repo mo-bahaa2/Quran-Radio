@@ -7,7 +7,7 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
-    overflow-y: scroll; /* إضافة Scroll للصفحة */
+    overflow-y: scroll;
     position: relative;
     animation: changeBackground 10s infinite;
 }
@@ -33,7 +33,7 @@ header h1 {
 }
 
 #prayer-times {
-    background: rgba(0, 77, 64, 0.8); /* خلفية شبه شفافة */
+    background: rgba(0, 77, 64, 0.8);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 10px rgba(255, 255, 255, 0.2);
@@ -42,7 +42,7 @@ header h1 {
 }
 
 #prayer-times h2 {
-    color: #FFD700; /* نص ذهبي */
+    color: #FFD700;
     margin-bottom: 15px;
 }
 
@@ -52,21 +52,21 @@ header h1 {
 }
 
 #prayer-times-list li {
-    background: #874100; /* خلفية ذهبية */
+    background: #874100;
     padding: 10px;
     border-radius: 10px;
     margin: 10px 0;
-    color: #FFF0D9; /* نص أخضر داكن */
+    color: #FFF0D9;
     font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
 #prayer-times-list li:hover {
-    background: #EAB15E; /* تغيير اللون عند التحويم */
+    background: #EAB15E;
 }
 
 #prayer-times-list li:first-child {
-    background: #ff5733; /* لون مميز للإمساك */
+    background: #ff5733;
     color: white;
 }
 
@@ -76,7 +76,7 @@ header h1 {
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
-    padding-bottom: 100px; /* إضافة مساحة أسفل القائمة */
+    padding-bottom: 100px;
     position: relative;
     z-index: 2;
 }
@@ -89,7 +89,7 @@ header h1 {
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s ease;
     font-weight: bold;
-    width: 200px; /* عرض ثابت لعناصر القائمة */
+    width: 200px;
     color: #FFF0D9;
 }
 
@@ -104,7 +104,7 @@ header h1 {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 10px rgba(255, 255, 255, 0.2);
-    margin-bottom: 100px; /* إضافة مساحة أسفل التفاصيل */
+    margin-bottom: 100px;
     position: relative;
     z-index: 2;
 }
@@ -114,11 +114,25 @@ header h1 {
     max-width: 400px;
 }
 
+#sheikh-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 #sheikh-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 15px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+#sheikh-name {
+    color: #FFF0D9;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 footer {
