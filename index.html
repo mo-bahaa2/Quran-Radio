@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إذاعة القرآن الكريم</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="shortcut icon" href="./ض.jpeg" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إذاعة القرآن الكريم</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="./ض.jpeg" type="image/x-icon" />
 </head>
 <body>
-    <div id="stars-container"></div> <!-- النجوم -->
-    <div id="moon-container"></div> <!-- الهلال -->
-    <header>
-        <h1>إذاعة القرآن الكريم</h1>
-        <p id="random-ayah"></p>
-    </header>
-    <main>
-        <div id="prayer-times">
-            <h2>مواعيد الأذان</h2>
-            <ul id="prayer-times-list"></ul>
+  <header>
+    <h1>القرآن الكريم - مباشر</h1>
+    <div id="daily-message" class="neon-text">
+      <p id="random-ayah">جارٍ تحميل الآية...</p>
+    </div>
+    <div class="nav-buttons">
+      <button id="show-prayers">مواقيت الصلاة</button>
+      <button id="show-radios">إذاعات القرآن</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="prayer-times" class="section-box">
+      <h2>مواقيت الصلاة</h2>
+      <ul id="prayer-times-list"></ul>
+    </section>
+
+    <section id="radio-section" class="section-box" style="display: none;">
+      <h2>اختر إذاعة</h2>
+      <div id="sheikh-list" class="radio-grid"></div>
+
+      <div id="sheikh-details" style="display: none;">
+        <audio id="sheikh-audio" controls preload="none"></audio>
+        <div id="sheikh-info">
+          <img id="sheikh-image" src="" alt="صورة القارئ" />
+          <p id="sheikh-name"></p>
         </div>
-        <div id="sheikh-list"></div>
-        <div id="sheikh-details" style="display: none;">
-            <audio id="sheikh-audio" controls preload="none">
-                <source src="" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            <div id="sheikh-info">
-                <img id="sheikh-image" src="" alt="صورة الشيخ" loading="lazy">
-                <p id="sheikh-name"></p>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>إذاعة القرآن الكريم , جميع الحقوق محفوظة بهاء </p>
-    </footer>
-    <script src="./index.js"></script>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>إذاعة القرآن الكريم - جميع الحقوق محفوظة © بهاء</p>
+  </footer>
+
+  <script src="index.js"></script>
 </body>
 </html>

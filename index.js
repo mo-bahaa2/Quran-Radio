@@ -1,125 +1,114 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const sheikhList = document.getElementById('sheikh-list');
-    const sheikhDetails = document.getElementById('sheikh-details');
-    const sheikhImage = document.getElementById('sheikh-image');
-    const sheikhAudio = document.getElementById('sheikh-audio');
-    const starsContainer = document.getElementById('stars-container');
-    const moonContainer = document.getElementById('moon-container');
-    const prayerTimesList = document.getElementById('prayer-times-list');
+  const sheikhList = document.getElementById('sheikh-list');
+  const sheikhDetails = document.getElementById('sheikh-details');
+  const sheikhImage = document.getElementById('sheikh-image');
+  const sheikhAudio = document.getElementById('sheikh-audio');
+  const prayerTimesList = document.getElementById('prayer-times-list');
 
-    function createStars() {
-        const numStars = 100;
-        for (let i = 0; i < numStars; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.animationDelay = `${Math.random() * 2}s`;
-            starsContainer.appendChild(star);
-        }
-    }
+  // Toggle sections
+  document.getElementById("show-prayers").addEventListener("click", () => {
+    document.getElementById("prayer-times").style.display = "block";
+    document.getElementById("radio-section").style.display = "none";
+    setActiveButton("show-prayers");
+  });
 
-    function addMoon() {
-        const moon = document.createElement('img');
-        moon.src = './images-removebg-preview.png';
-        moon.alt = 'هلال رمضان';
-        moonContainer.appendChild(moon);
-    }
+  document.getElementById("show-radios").addEventListener("click", () => {
+    document.getElementById("prayer-times").style.display = "none";
+    document.getElementById("radio-section").style.display = "block";
+    setActiveButton("show-radios");
+  });
 
-    function showLoadingMessage() {
-        const loadingMessage = document.createElement('p');
-        loadingMessage.textContent = 'جاري التحميل...';
-        loadingMessage.style.color = '#FFF0D9';
-        sheikhList.appendChild(loadingMessage);
-    }
+  function setActiveButton(id) {
+    document.querySelectorAll(".nav-buttons button").forEach(btn => btn.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
 
-    function hideLoadingMessage() {
-        const loadingMessage = sheikhList.querySelector('p');
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
-    }
-
-    createStars();
-    addMoon();
-
-    fetch('https://data-rosy.vercel.app/radio.json')
-        .then(response => response.json())
-        .then(data => {
-            hideLoadingMessage();
-            if (data.radios && Array.isArray(data.radios)) {
-                data.radios.forEach(sheikh => {
-                    const sheikhItem = document.createElement('div');
-                    sheikhItem.className = 'sheikh-item';
-                    sheikhItem.textContent = sheikh.name;
-                    sheikhItem.addEventListener('click', () => {
-                        sheikhImage.src = sheikh.img;
-                        sheikhAudio.src = sheikh.url;
-                        document.getElementById('sheikh-name').textContent = sheikh.name;
-                        sheikhDetails.style.display = 'block';
-                        sheikhAudio.play();
-                    });
-                    sheikhList.appendChild(sheikhItem);
-                });
-            } else {
-                console.error('Expected an array inside "radios" but got:', data);
-            }
-        })
-        .catch(error => {
-            hideLoadingMessage();
-            console.error('Error fetching sheikhs:', error);
-            sheikhList.innerHTML = '<p style="color: #FF0000;">تعذر تحميل بيانات الشيوخ</p>';
+  // Fetch radio data
+  fetch('https://data-rosy.vercel.app/radio.json')
+    .then(response => response.json())
+    .then(data => {
+      if (data.radios && Array.isArray(data.radios)) {
+        data.radios.forEach(sheikh => {
+          const sheikhItem = document.createElement('div');
+          sheikhItem.className = 'sheikh-item';
+          sheikhItem.textContent = sheikh.name;
+          sheikhItem.addEventListener('click', () => {
+            sheikhImage.src = sheikh.img;
+            sheikhAudio.src = sheikh.url;
+            document.getElementById('sheikh-name').textContent = sheikh.name;
+            sheikhDetails.style.display = 'block';
+            sheikhAudio.play();
+          });
+          sheikhList.appendChild(sheikhItem);
         });
+      }
+    })
+    .catch(error => {
+      sheikhList.innerHTML = '<p style="color: red;">تعذر تحميل الإذاعات</p>';
+    });
 
-    fetch('https://api.alquran.cloud/v1/ayah/random/ar.asad')
-        .then(response => response.json())
-        .then(data => {
-            const ayah = data.data.text;
-            document.getElementById('random-ayah').textContent = ayah;
-        })
-        .catch(error => {
-            console.error('Error fetching random ayah:', error);
+  // Fetch random ayah
+  fetch('https://api.alquran.cloud/v1/ayah/random/ar.asad')
+    .then(response => response.json())
+    .then(data => {
+      const ayah = data.data.text;
+      document.getElementById('random-ayah').textContent = ayah;
+    })
+    .catch(error => {
+      console.error('Error fetching ayah:', error);
+    });
+
+  // Convert time to Arabic 12-hour format
+  function convertToArabicTime(time) {
+    const [hourStr, minute] = time.split(':');
+    let hour = parseInt(hourStr);
+    let period = 'ص';
+
+    if (hour >= 12) {
+      period = 'م';
+      if (hour > 12) hour -= 12;
+    }
+    if (hour === 0) hour = 12;
+
+    return `${hour}:${minute} ${period}`;
+  }
+
+  // Fetch prayer times
+  function fetchPrayerTimes() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=cairo&country=egypt&method=8`;
+
+    const prayerNames = {
+      Fajr: 'الفجر',
+      Imsak: 'الإمساك',
+      Dhuhr: 'الظهر',
+      Asr: 'العصر',
+      Maghrib: 'المغرب',
+      Isha: 'العشاء'
+    };
+
+    const prayerKeys = ['Fajr', 'Imsak', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const timings = data.data.timings;
+        prayerTimesList.innerHTML = '';
+        prayerKeys.forEach(key => {
+          const li = document.createElement('li');
+          li.textContent = `${prayerNames[key]}: ${convertToArabicTime(timings[key])}`;
+          prayerTimesList.appendChild(li);
         });
+      })
+      .catch(error => {
+        prayerTimesList.innerHTML = '<p>تعذر تحميل مواعيد الصلاة</p>';
+      });
+  }
 
-    function convertTo12HourFormat(time) {
-        const [hour, minute] = time.split(':');
-        let period = 'AM';
-        let formattedHour = parseInt(hour);
-        if (formattedHour >= 12) {
-            period = 'PM';
-            if (formattedHour > 12) formattedHour -= 12;
-        }
-        return `${formattedHour}:${minute} ${period}`;
-    }
-
-    function fetchPrayerTimes() {
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const year = today.getFullYear();
-
-        const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=cairo&country=egypt&method=8`;
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const timings = data.data.timings;
-                const prayers = ['Fajr','Imsak', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-                
-                prayerTimesList.innerHTML = '';
-
-                prayers.forEach(prayer => {
-                    const li = document.createElement('li');
-                    li.textContent = `${prayer}: ${convertTo12HourFormat(timings[prayer])}`;
-                    prayerTimesList.appendChild(li);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching prayer times:', error);
-                prayerTimesList.innerHTML = '<p>تعذر تحميل مواعيد الأذان</p>';
-            });
-    }
-
-    fetchPrayerTimes();
-    setInterval(fetchPrayerTimes, 86400000);
+  fetchPrayerTimes();
+  setInterval(fetchPrayerTimes, 86400000); // تحديث كل يوم
 });
