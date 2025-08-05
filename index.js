@@ -1,114 +1,92 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const sheikhList = document.getElementById('sheikh-list');
-  const sheikhDetails = document.getElementById('sheikh-details');
-  const sheikhImage = document.getElementById('sheikh-image');
-  const sheikhAudio = document.getElementById('sheikh-audio');
-  const prayerTimesList = document.getElementById('prayer-times-list');
-
-  // Toggle sections
-  document.getElementById("show-prayers").addEventListener("click", () => {
-    document.getElementById("prayer-times").style.display = "block";
-    document.getElementById("radio-section").style.display = "none";
-    setActiveButton("show-prayers");
+// عرض الآية اليومية
+fetch('https://api.alquran.cloud/v1/ayah/random/ar.asad')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('daily-message').textContent = `"${data.data.text}" - ${data.data.surah.name} آية ${data.data.numberInSurah}`;
   });
 
-  document.getElementById("show-radios").addEventListener("click", () => {
-    document.getElementById("prayer-times").style.display = "none";
-    document.getElementById("radio-section").style.display = "block";
-    setActiveButton("show-radios");
-  });
+// أسماء الصلوات بالعربية
+const arabicNames = {
+  Fajr: "الفجر",
+  Sunrise: "الشروق",
+  Dhuhr: "الظهر",
+  Asr: "العصر",
+  Sunset: "الغروب",
+  Maghrib: "المغرب",
+  Isha: "العشاء",
+  Imsak: "الإمساك",
+  Midnight: "منتصف الليل"
+};
 
-  function setActiveButton(id) {
-    document.querySelectorAll(".nav-buttons button").forEach(btn => btn.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-  }
+// تحويل الوقت إلى 12 ساعة بالعربية
+function convertTo12Hour(timeStr) {
+  const [hourStr, minute] = timeStr.split(':');
+  let hour = parseInt(hourStr, 10);
+  const period = hour >= 12 ? 'م' : 'ص';
+  hour = hour % 12 || 12;
+  return `${hour}:${minute} ${period}`;
+}
 
-  // Fetch radio data
-  fetch('https://data-rosy.vercel.app/radio.json')
-    .then(response => response.json())
+// تحميل مواقيت الصلاة
+function loadPrayerTimes() {
+  const now = new Date();
+  const day = now.getDate().toString().padStart(2, '0');
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const year = now.getFullYear();
+
+  fetch(`https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=cairo&country=egypt&method=8`)
+    .then(res => res.json())
     .then(data => {
-      if (data.radios && Array.isArray(data.radios)) {
-        data.radios.forEach(sheikh => {
-          const sheikhItem = document.createElement('div');
-          sheikhItem.className = 'sheikh-item';
-          sheikhItem.textContent = sheikh.name;
-          sheikhItem.addEventListener('click', () => {
-            sheikhImage.src = sheikh.img;
-            sheikhAudio.src = sheikh.url;
-            document.getElementById('sheikh-name').textContent = sheikh.name;
-            sheikhDetails.style.display = 'block';
-            sheikhAudio.play();
-          });
-          sheikhList.appendChild(sheikhItem);
-        });
-      }
-    })
-    .catch(error => {
-      sheikhList.innerHTML = '<p style="color: red;">تعذر تحميل الإذاعات</p>';
-    });
+      const timings = data.data.timings;
+      const prayerList = document.getElementById('prayer-times-list');
+      prayerList.innerHTML = '';
 
-  // Fetch random ayah
-  fetch('https://api.alquran.cloud/v1/ayah/random/ar.asad')
-    .then(response => response.json())
-    .then(data => {
-      const ayah = data.data.text;
-      document.getElementById('random-ayah').textContent = ayah;
-    })
-    .catch(error => {
-      console.error('Error fetching ayah:', error);
-    });
-
-  // Convert time to Arabic 12-hour format
-  function convertToArabicTime(time) {
-    const [hourStr, minute] = time.split(':');
-    let hour = parseInt(hourStr);
-    let period = 'ص';
-
-    if (hour >= 12) {
-      period = 'م';
-      if (hour > 12) hour -= 12;
-    }
-    if (hour === 0) hour = 12;
-
-    return `${hour}:${minute} ${period}`;
-  }
-
-  // Fetch prayer times
-  function fetchPrayerTimes() {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
-
-    const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=cairo&country=egypt&method=8`;
-
-    const prayerNames = {
-      Fajr: 'الفجر',
-      Imsak: 'الإمساك',
-      Dhuhr: 'الظهر',
-      Asr: 'العصر',
-      Maghrib: 'المغرب',
-      Isha: 'العشاء'
-    };
-
-    const prayerKeys = ['Fajr', 'Imsak', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const timings = data.data.timings;
-        prayerTimesList.innerHTML = '';
-        prayerKeys.forEach(key => {
+      Object.keys(timings).forEach(key => {
+        if (arabicNames[key]) {
           const li = document.createElement('li');
-          li.textContent = `${prayerNames[key]}: ${convertToArabicTime(timings[key])}`;
-          prayerTimesList.appendChild(li);
-        });
-      })
-      .catch(error => {
-        prayerTimesList.innerHTML = '<p>تعذر تحميل مواعيد الصلاة</p>';
+          li.textContent = `${arabicNames[key]}: ${convertTo12Hour(timings[key])}`;
+          prayerList.appendChild(li);
+        }
       });
-  }
+    });
+}
 
-  fetchPrayerTimes();
-  setInterval(fetchPrayerTimes, 86400000); // تحديث كل يوم
-});
+// تشغيل عند التحميل
+loadPrayerTimes();
+
+// التحديث كل 12 ساعة
+setInterval(loadPrayerTimes, 43200000); // 12 ساعة = 43200000ms
+
+// تحميل قائمة الإذاعات مع التحكم في التشغيل
+let currentAudio = null;
+
+fetch('https://data-rosy.vercel.app/radio.json')
+  .then(res => res.json())
+  .then(data => {
+    const radioList = document.getElementById('radio-list');
+    radioList.innerHTML = '';
+
+    data.radios.forEach(radio => {
+      const card = document.createElement('div');
+      card.className = 'sheikh-item';
+      card.style.setProperty('--radio-image', `url('${radio.img}')`);
+      card.innerHTML = `<h4>${radio.name}</h4>`;
+
+      card.style.backgroundImage = `linear-gradient(rgba(232, 216, 195, 0.9), rgba(232, 216, 195, 0.8)), url('${radio.img}')`;
+      card.style.backgroundSize = 'cover';
+      card.style.backgroundPosition = 'center';
+
+      card.addEventListener('click', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+
+        const audio = new Audio(radio.url);
+        audio.play();
+        currentAudio = audio;
+      });
+
+      radioList.appendChild(card);
+    });
+  });

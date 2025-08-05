@@ -5,39 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>إذاعة القرآن الكريم</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="./ض.jpeg" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header>
-    <h1>القرآن الكريم - مباشر</h1>
-    <div id="daily-message" class="neon-text">
-      <p id="random-ayah">جارٍ تحميل الآية...</p>
-    </div>
-    <div class="nav-buttons">
-      <button id="show-prayers">مواقيت الصلاة</button>
-      <button id="show-radios">إذاعات القرآن</button>
-    </div>
+    <h1>إذاعة القرآن الكريم</h1>
+    <p id="daily-message">تحميل الرسالة اليومية...</p>
   </header>
 
-  <main>
-    <section id="prayer-times" class="section-box">
-      <h2>مواقيت الصلاة</h2>
-      <ul id="prayer-times-list"></ul>
-    </section>
+  <div class="section-box">
+    <h2>مواقيت الصلاة - القاهرة</h2>
+    <ul id="prayer-times-list"></ul>
+  </div>
 
-    <section id="radio-section" class="section-box" style="display: none;">
-      <h2>اختر إذاعة</h2>
-      <div id="sheikh-list" class="radio-grid"></div>
-
-      <div id="sheikh-details" style="display: none;">
-        <audio id="sheikh-audio" controls preload="none"></audio>
-        <div id="sheikh-info">
-          <img id="sheikh-image" src="" alt="صورة القارئ" />
-          <p id="sheikh-name"></p>
-        </div>
-      </div>
-    </section>
-  </main>
+  <div class="section-box">
+    <h2>الإذاعات القرآنية</h2>
+    <div class="radio-grid" id="radio-list">جاري التحميل...</div>
+  </div>
 
   <footer>
     <p>إذاعة القرآن الكريم - جميع الحقوق محفوظة © بهاء</p>

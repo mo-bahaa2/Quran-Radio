@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
 :root {
-  --bg-color: #1C1F2A;
-  --box-color: #2D3142;
-  --accent: #0096C7;
-  --text-main: #EAEAEA;
-  --text-soft: #A0A4B8;
+  --bg-color: #f8f1e7;
+  --box-color: #fff9f0;
+  --accent: #8a5c2f;
+  --text-main: #3d2c1c;
+  --text-soft: #7a6b5f;
 }
 
 body {
@@ -14,19 +14,21 @@ body {
   color: var(--text-main);
   margin: 0;
   padding: 0;
+  direction: rtl;
   text-align: center;
 }
 
 header {
   background-color: var(--box-color);
   padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid var(--accent);
 }
 
 header h1 {
   margin: 0;
   color: var(--accent);
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
 #daily-message {
@@ -35,34 +37,14 @@ header h1 {
   font-size: 1.1rem;
 }
 
-.nav-buttons {
-  margin-top: 15px;
-}
-
-.nav-buttons button {
-  background: none;
-  border: 2px solid var(--accent);
-  color: var(--accent);
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.nav-buttons button:hover,
-.nav-buttons button.active {
-  background-color: var(--accent);
-  color: #fff;
-}
-
 .section-box {
   background-color: var(--box-color);
   margin: 30px auto;
   padding: 20px;
   border-radius: 16px;
   max-width: 800px;
-  box-shadow: 0 0 10px rgba(0, 150, 199, 0.15);
+  box-shadow: 0 0 8px rgba(138, 92, 47, 0.1);
+  border: 1px solid var(--accent);
 }
 
 ul {
@@ -71,7 +53,7 @@ ul {
 }
 
 #prayer-times-list li {
-  background-color: #3A3F5C;
+  background-color: #e8d8c3;
   margin: 10px auto;
   padding: 12px;
   border-radius: 10px;
@@ -89,31 +71,39 @@ ul {
 }
 
 .sheikh-item {
-  background-color: #3A3F5C;
+  background-color: #e8d8c3;
   color: var(--text-main);
   border-radius: 12px;
   padding: 15px;
   cursor: pointer;
   width: 200px;
   transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgba(0, 150, 199, 0.1);
+  box-shadow: 0 0 8px rgba(138, 92, 47, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sheikh-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.sheikh-item > * {
+  position: relative;
+  z-index: 1;
 }
 
 .sheikh-item:hover {
   background-color: var(--accent);
   color: white;
-}
-
-#sheikh-details {
-  margin-top: 20px;
-}
-
-#sheikh-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  margin: 10px;
-  border: 2px solid var(--accent);
 }
 
 footer {
@@ -122,4 +112,5 @@ footer {
   color: var(--text-soft);
   font-size: 0.9rem;
   margin-top: 40px;
+  border-top: 1px solid var(--accent);
 }
