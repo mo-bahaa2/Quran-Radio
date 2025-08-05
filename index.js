@@ -54,6 +54,7 @@ function loadPrayerTimes() {
 // تشغيل عند التحميل
 loadPrayerTimes();
 
+
 // التحديث كل 12 ساعة
 setInterval(loadPrayerTimes, 43200000); // 12 ساعة = 43200000ms
 
